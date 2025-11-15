@@ -7,6 +7,7 @@ import { ru } from "@/montalago/translations/ru";
 import { projectName } from "@/montalago/projectInfo";
 import { financialData } from "@/montalago/financials";
 import { executiveSummary } from "@/montalago/executiveSummary";
+import { MapPin } from "lucide-react";
 
 const languages = { EN: en, IT: it, RU: ru };
 
@@ -249,6 +250,17 @@ export default function InvestorsPage() {
             <p className="text-sm sm:text-base text-slate-600">
               Lugano · Ticino · Switzerland
             </p>
+            <div className="mt-2 flex items-center gap-2 text-sm sm:text-base text-slate-700">
+              <MapPin className="h-5 w-5" style={{ color: "#DB4437" }} />
+              <a
+                href="https://www.google.com/maps?q=Via+Casoro+2,+Lugano"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-slate-900 hover:underline"
+              >
+                Via Casoro 2, Lugano
+              </a>
+            </div>
           </div>
 
           <button
