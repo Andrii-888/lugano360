@@ -4,14 +4,17 @@ import { useState } from "react";
 import { en } from "@/montalago/translations/en";
 import { it } from "@/montalago/translations/it";
 import { ru } from "@/montalago/translations/ru";
-import { projectName } from "@/montalago/projectInfo";
 import { financialData } from "@/montalago/financials";
 import { executiveSummary } from "@/montalago/executiveSummary";
 import { MapPin } from "lucide-react";
+import { InvestorsHero } from "./InvestorsHero";
+import { InvestorsHighlights } from "./InvestorsHighlights";
+import { InvestorsCostsRevenues } from "./InvestorsCostsRevenues";
+import { InvestorsExecutiveSummary } from "./InvestorsExecutiveSummary";
 
 const languages = { EN: en, IT: it, RU: ru };
 
-type UiLang = "EN" | "IT" | "RU";
+export type UiLang = "EN" | "IT" | "RU";
 type DataLang = "en" | "it" | "ru";
 
 export default function InvestorsPage() {
@@ -30,171 +33,83 @@ export default function InvestorsPage() {
 
   const formatChf = (value: number) => `CHF ${value.toLocaleString("de-CH")}`;
 
+  const heroTagline =
+    lang === "IT"
+      ? "Progetto residenziale premium sul Lago di Lugano, con forte potenziale di rendimento."
+      : lang === "RU"
+      ? "Премиальный жилой проект на озере Лугано с высоким инвестиционным потенциалом."
+      : "Premium residential development on Lake Lugano with strong investment potential.";
+
+  const primaryCtaLabel =
+    lang === "IT"
+      ? "Richiedi il pacchetto completo d’investimento"
+      : lang === "RU"
+      ? "Запросить полный инвестиционный пакет"
+      : "Request full investment package";
+
+  const secondaryCtaLabel =
+    lang === "IT"
+      ? "Richiedi una call"
+      : lang === "RU"
+      ? "Запросить созвон"
+      : "Book an investor call";
+
+  const highlightsTitle =
+    lang === "IT"
+      ? "Perché investire in Montalago"
+      : lang === "RU"
+      ? "Почему стоит инвестировать в Montalago"
+      : "Why invest in Montalago";
+
+  const highlights: string[] =
+    lang === "IT"
+      ? [
+          "Posizione strategica a Lugano, vicino al confine italiano",
+          "Mercato immobiliare svizzero stabile e regolamentato",
+          "Domanda crescente per appartamenti moderni vista lago",
+        ]
+      : lang === "RU"
+      ? [
+          "Стратегическое расположение в Лугано рядом с итальянской границей",
+          "Стабильный и регулируемый швейцарский рынок недвижимости",
+          "Растущий спрос на современные квартиры с видом на озеро",
+        ]
+      : [
+          "Strategic location in Lugano near the Italian border",
+          "Stable and highly regulated Swiss real-estate market",
+          "Growing demand for modern lake-view apartments",
+        ];
+
   return (
     <main className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
-        {/* HEADER */}
-        <header className="border-b border-slate-200 pb-6 mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-500">
-              <span className="h-px w-8 bg-slate-300" />
-              <span>Lugano · Switzerland · Residential</span>
-            </div>
+        {/* HERO */}
+        <InvestorsHero
+          lang={lang}
+          setLang={setLang}
+          marginPercent={totals.marginPercent}
+          subtitle={t.subtitle}
+          heroTagline={heroTagline}
+          primaryCtaLabel={primaryCtaLabel}
+          secondaryCtaLabel={secondaryCtaLabel}
+          onPrimaryClick={() => setShowExecutive(true)}
+        />
 
-            <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">
-              {projectName}
-            </h1>
-
-            <p className="text-sm sm:text-base text-slate-600 max-w-2xl">
-              {t.subtitle}
-            </p>
-          </div>
-
-          {/* LANG SWITCH */}
-          <div className="flex items-center gap-2 self-start md:self-end">
-            <span className="text-xs text-slate-500 uppercase tracking-widest">
-              Language
-            </span>
-            <div className="inline-flex rounded-full border border-slate-200 bg-white p-1 shadow-sm">
-              {(["EN", "IT", "RU"] as const).map((lng) => (
-                <button
-                  key={lng}
-                  onClick={() => setLang(lng)}
-                  className={`px-3 py-1 text-xs rounded-full transition ${
-                    lang === lng
-                      ? "bg-slate-900 text-white"
-                      : "text-slate-700 hover:bg-slate-100"
-                  }`}
-                >
-                  {lng}
-                </button>
-              ))}
-            </div>
-          </div>
-        </header>
-
-        {/* OVERVIEW + KEY FIGURES */}
-        <section className="grid gap-6 lg:grid-cols-[1.4fr,1fr] mb-10">
-          {/* Overview */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-500 mb-3">
-              {t.overviewTitle}
-            </h2>
-
-            <ul className="space-y-2 text-sm sm:text-base text-slate-800">
-              {t.overview.map((item, i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="mt-1 h-1 w-1 rounded-full bg-slate-300" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Key Figures */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-500 mb-1">
-              Key figures
-            </h2>
-
-            <div className="space-y-4 text-sm sm:text-base">
-              <div className="flex justify-between gap-4">
-                <span className="text-slate-500">
-                  {lang === "IT"
-                    ? "Investimento totale"
-                    : lang === "RU"
-                    ? "Общие инвестиции"
-                    : "Total investment"}
-                </span>
-                <span className="font-semibold text-slate-900">
-                  {formatChf(totals.investment)}
-                </span>
-              </div>
-
-              <div className="flex justify-between gap-4">
-                <span className="text-slate-500">
-                  {lang === "IT"
-                    ? "Ricavi previsti"
-                    : lang === "RU"
-                    ? "Ожидаемые доходы"
-                    : "Projected revenues"}
-                </span>
-                <span className="font-semibold text-slate-900">
-                  {formatChf(totals.revenues)}
-                </span>
-              </div>
-
-              <div className="flex justify-between gap-4">
-                <span className="text-slate-500">
-                  {lang === "IT"
-                    ? "Utile lordo"
-                    : lang === "RU"
-                    ? "Валовая прибыль"
-                    : "Gross profit"}
-                </span>
-                <span className="font-semibold text-slate-900">
-                  {formatChf(totals.profit)}
-                </span>
-              </div>
-
-              <div className="flex justify-between gap-4">
-                <span className="text-slate-500">
-                  {lang === "IT"
-                    ? "Margine lordo"
-                    : lang === "RU"
-                    ? "Валовая маржа"
-                    : "Gross margin"}
-                </span>
-                <span className="font-semibold text-slate-900">
-                  {totals.marginPercent}%
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* HIGHLIGHTS + KEY FIGURES */}
+        <InvestorsHighlights
+          lang={lang}
+          highlightsTitle={highlightsTitle}
+          highlights={highlights}
+          totals={totals}
+          formatChf={formatChf}
+        />
 
         {/* COSTS + REVENUES */}
-        <section className="grid gap-6 lg:grid-cols-2 mb-10">
-          {/* Costs */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-slate-500 mb-3">
-              {lang === "IT"
-                ? "Categorie di costo principali"
-                : lang === "RU"
-                ? "Основные категории затрат"
-                : "Key cost categories"}
-            </h3>
-
-            <ul className="space-y-2 text-sm sm:text-base text-slate-800">
-              {investmentDetails.map((item, i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="mt-1 h-1 w-1 rounded-full bg-slate-300" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Revenues */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-slate-500 mb-3">
-              {lang === "IT"
-                ? "Struttura dei ricavi"
-                : lang === "RU"
-                ? "Структура доходов"
-                : "Revenue breakdown"}
-            </h3>
-
-            <ul className="space-y-2 text-sm sm:text-base text-slate-800">
-              {revenues.map((item, i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="mt-1 h-1 w-1 rounded-full bg-slate-300" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+        <InvestorsCostsRevenues
+          lang={lang}
+          investmentDetails={investmentDetails}
+          revenues={revenues}
+        />
 
         {/* SHORT SUMMARY */}
         <section className="mb-10">
@@ -206,43 +121,13 @@ export default function InvestorsPage() {
         </section>
 
         {/* EXECUTIVE SUMMARY (COLLAPSIBLE) */}
-        {showExecutive && (
-          <section className="mb-12">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
-              <p className="text-sm sm:text-base font-medium text-slate-800">
-                {exec.headline}
-              </p>
-
-              {exec.sections.map((section, idx) => (
-                <div key={idx} className="space-y-3">
-                  <h4 className="text-sm sm:text-base font-semibold text-slate-900">
-                    {section.title}
-                  </h4>
-
-                  {section.paragraphs.map((p, pi) => (
-                    <p
-                      key={pi}
-                      className="text-sm sm:text-base leading-relaxed text-slate-700"
-                    >
-                      {p}
-                    </p>
-                  ))}
-
-                  {section.bullets && (
-                    <ul className="list-disc ml-5 space-y-1 text-sm sm:text-base text-slate-700">
-                      {section.bullets.map((b, bi) => (
-                        <li key={bi}>{b}</li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+        {showExecutive && <InvestorsExecutiveSummary exec={exec} />}
 
         {/* CONTACT + BUTTON */}
-        <section className="border-t border-slate-200 pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <section
+          id="contact"
+          className="border-t border-slate-200 pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+        >
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-widest text-slate-500 mb-1">
               {t.contactTitle}
@@ -273,11 +158,7 @@ export default function InvestorsPage() {
                 : lang === "IT"
                 ? "Nascondi il pacchetto investitore"
                 : "Hide investment package"
-              : lang === "RU"
-              ? "Запросить полный инвестиционный пакет"
-              : lang === "IT"
-              ? "Richiedi il pacchetto completo d’investimento"
-              : "Request full investment package"}
+              : primaryCtaLabel}
           </button>
         </section>
       </div>
